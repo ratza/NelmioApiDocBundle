@@ -123,6 +123,20 @@ class SwaggerFormatter implements FormatterInterface
             $subPath = $this->stripBasePath($resource);
             $normalizedName = $this->normalizeResourcePath($subPath);
 
+            // Search if this api resource has been already defined
+            $foundApi = false;
+            foreach ($apis as $api) {
+                if ($api['path'] === '/'.$normalizedName) {
+                    $foundApi = true;
+                    break;
+                }
+            }
+
+            // Skip api resource as it has been added already
+            if ($foundApi) {
+                continue;
+            }
+
             $apis[] = array(
                 'path' => '/' . $normalizedName,
                 'description' => $apiDoc->getResourceDescription(),
