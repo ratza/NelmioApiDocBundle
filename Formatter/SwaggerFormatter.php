@@ -355,6 +355,16 @@ class SwaggerFormatter implements FormatterInterface
                     'responseMessages' => array_values($responseMessages),
                 );
 
+                $notes = $apiDoc->getDocumentation();
+                $notesIndex = strpos($notes, "\n");
+
+                if ($notesIndex !== false) {
+                    $notes = trim(substr($notes, $notesIndex));
+                    if (strlen($notes)) {
+                        $operation['notes'] = $notes;
+                    }
+                }
+
                 if ($type !== null) {
                     $operation['type'] = $type;
                 }
