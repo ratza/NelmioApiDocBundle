@@ -306,7 +306,8 @@ class SwaggerFormatter implements FormatterInterface
                     $responseModel = array(
                         'code' => $statusCode,
                         'message' => $message,
-                        'responseModel' => $collId
+                        'responseModel' => 'array',
+                        'items' => array('$ref' => $this->registerModel($className)),
                     );
                 } else {
 
@@ -329,6 +330,7 @@ class SwaggerFormatter implements FormatterInterface
             }
 
             $type = isset($responseMessages[200]['responseModel']) ? $responseMessages[200]['responseModel'] : null;
+            $items = isset($responseMessages[200]['items']) ? $responseMessages[200]['items'] : null;
 
             foreach ($apiDoc->getRoute()->getMethods() as $method) {
                 $operation = array(
@@ -341,6 +343,10 @@ class SwaggerFormatter implements FormatterInterface
 
                 if ($type !== null) {
                     $operation['type'] = $type;
+                }
+
+                if ($items !== null) {
+                    $operation['items'] = $items;
                 }
 
                 $apiBag[$path][] = $operation;
