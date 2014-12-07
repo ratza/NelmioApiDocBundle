@@ -264,6 +264,10 @@ class SwaggerFormatter implements FormatterInterface
                     $parameter['enum'] = explode('|', $req);
                 }
 
+                if ($paramValue === '_locale' && false != ($req = $route->getRequirement('_locale'))) {
+                    $parameter['enum'] = explode('|', $req);
+                }
+
                 $parameters[] = $parameter;
             }
 
