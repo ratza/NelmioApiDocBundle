@@ -350,13 +350,16 @@ class SwaggerFormatter implements FormatterInterface
             $type = isset($responseMessages[200]['responseModel']) ? $responseMessages[200]['responseModel'] : null;
             $items = isset($responseMessages[200]['items']) ? $responseMessages[200]['items'] : null;
 
+            $filteredMessages = $responseMessages;
+            unset($filteredMessages[200]);
+
             foreach ($apiDoc->getRoute()->getMethods() as $method) {
                 $operation = array(
                     'method' => $method,
                     'summary' => $apiDoc->getDescription(),
                     'nickname' => $this->generateNickname($method, $itemResource),
                     'parameters' => $parameters,
-                    'responseMessages' => array_values($responseMessages),
+                    'responseMessages' => array_values($filteredMessages),
                 );
 
                 $notes = $apiDoc->getDocumentation();
