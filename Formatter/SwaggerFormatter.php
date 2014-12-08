@@ -207,8 +207,8 @@ class SwaggerFormatter implements FormatterInterface
             'resourcePath' => $resource,
             'apis' => array(),
             'models' => array(),
-            'produces' => array(),
-            'consumes' => array(),
+            'produces' => array('application/json'),
+            'consumes' => array('application/json'),
             'authorizations' => $this->getAuthorizations(),
         );
 
@@ -456,10 +456,12 @@ class SwaggerFormatter implements FormatterInterface
      */
     protected function deriveParameters(array $input, $paramType = 'form')
     {
+        $oldParamType = $paramType;
 
         $parameters = array();
 
         foreach ($input as $name => $prop) {
+            $paramType = $oldParamType;
 
             $type = null;
             $format = null;
@@ -469,6 +471,14 @@ class SwaggerFormatter implements FormatterInterface
 
             if (!isset($prop['actualType'])) {
                 $prop['actualType'] = 'string';
+            }
+
+            if (isset($prop['paramType'])) {
+                $paramType = $prop['paramType'];
+            }
+
+            if (!isset($prop['description'])) {
+                $prop['description'] = '';
             }
 
             if (isset ($this->typeMap[$prop['actualType']])) {
@@ -487,7 +497,7 @@ class SwaggerFormatter implements FormatterInterface
                             $this->registerModel(
                                 $prop['subType'],
                                 isset($prop['children']) ? $prop['children'] : null,
-                                $prop['description'] ?: $prop['dataType']
+                                $prop['description']
                             );
                         break;
 
@@ -502,7 +512,7 @@ class SwaggerFormatter implements FormatterInterface
                                 $this->registerModel(
                                     $prop['subType'],
                                     isset($prop['children']) ? $prop['children'] : null,
-                                    $prop['description'] ?: $prop['dataType']
+                                    $prop['description']
                                 );
                             $items = array(
                                 '$ref' => $ref,
